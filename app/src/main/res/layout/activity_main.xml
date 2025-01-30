@@ -27,6 +27,13 @@
         android:text="Pausar"
         android:layout_gravity="center"/>
 
+    <Button
+        android:id="@+id/button_select_file"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="Sel. audio"
+        android:layout_gravity="center"/>
+
     <SeekBar
         android:id="@+id/seekBar"
         android:layout_width="match_parent"

@@ -1,6 +1,9 @@
 package com.example.reproductormp3
 
+import android.app.Activity
+import android.content.Intent
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,8 +18,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var seekBar: SeekBar
     private lateinit var handler: Handler
-    private var isPlaying = false
+    private var isPlaying = true
     private var currentPosition = 0
+    private val SELECT_FILE_REQUEST_CODE = 100
 
     /*
     Al crear la actividad
@@ -29,10 +33,14 @@ class MainActivity : AppCompatActivity() {
 
         // Se crea el reproductor
         mediaPlayer = MediaPlayer.create(this, R.raw.musica)
-        // Y la barra de reproducción
+        // Se pone el volumen del reproductor al máximo
+        mediaPlayer.setVolume(1.0f, 1.0f)
+        // Se añade la barra de reproducción
         seekBar = findViewById(R.id.seekBar)
-        // Y el botón para reproducir/pausar
+        // Se añade el botón para reproducir/pausar
         val playButton: Button = findViewById(R.id.button_play)
+        // Y un botón para seleccionar archivo de audio
+        val selectFileButton: Button = findViewById(R.id.button_select_file)
 
         // Esto es necesario para ir actualizando la barra de reproducción en segundo plano
         handler = Handler(Looper.getMainLooper())
@@ -67,6 +75,13 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
+        // Método para seleccionar el fichero de audio
+        selectFileButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            intent.type = "audio/*"
+            startActivityForResult(intent, SELECT_FILE_REQUEST_CODE)
+        }
+
         // Sirve para restaurar el estado al girar la pantalla
         savedInstanceState?.let {
             currentPosition = it.getInt("currentPosition", 0)
@@ -74,10 +89,35 @@ class MainActivity : AppCompatActivity() {
             if (it.getBoolean("isPlaying", false)) {
                 mediaPlayer.start()
                 updateSeekBar()
-                playButton.text = "Pause"
+                playButton.text = "Pausar"
                 isPlaying = true
             }
         }
+    }
+
+    // Cuando se ha recibido un nuevo fichero, se añade la música
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SELECT_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            data?.data?.let { uri ->
+                playAudio(uri)
+            }
+        }
+    }
+
+    // Cuando se ha recibido un nuevo fichero, se añade la música (data source), empieza a sonar
+    private fun playAudio(uri: Uri) {
+        mediaPlayer.reset()
+        mediaPlayer.setDataSource(this, uri)
+        mediaPlayer.prepare()
+        mediaPlayer.start()
+        seekBar.max = mediaPlayer.duration
+        updateSeekBar()
+        // Se debe cambiar el texto del botón
+        val playButton: Button = findViewById(R.id.button_play)
+        playButton.text = "Pausar"
+        // Se debe cambiar el boolean
+        isPlaying = true
     }
 
     /*
