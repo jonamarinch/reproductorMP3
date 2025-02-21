@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity"
+    android:background="#29a4ab">
+
+    <!-- Muestra el mensaje del reproductor-->
+    <TextView
+        android:id="@+id/textViewReproductor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reproductor de música"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+
+    <Button
+        android:id="@+id/button_play"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="Pausar"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/button_select_file"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="Sel. audio"
+        android:layout_gravity="center"/>
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"/>
+
+</LinearLayout>
